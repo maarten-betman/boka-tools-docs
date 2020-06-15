@@ -1,0 +1,19 @@
+boka\_tools package
+===================
+
+Subpackages
+-----------
+
+.. toctree::
+
+   boka_tools.planning
+   boka_tools.soil_investigation
+   boka_tools.utils
+
+Module contents
+---------------
+
+.. automodule:: boka_tools
+   :members:
+   :undoc-members:
+   :show-inheritance:

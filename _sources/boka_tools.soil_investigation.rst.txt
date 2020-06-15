@@ -1,0 +1,30 @@
+boka\_tools.soil\_investigation package
+=======================================
+
+Submodules
+----------
+
+boka\_tools.soil\_investigation.ags module
+------------------------------------------
+
+.. automodule:: boka_tools.soil_investigation.ags
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+boka\_tools.soil\_investigation.plot module
+-------------------------------------------
+
+.. automodule:: boka_tools.soil_investigation.plot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: boka_tools.soil_investigation
+   :members:
+   :undoc-members:
+   :show-inheritance:

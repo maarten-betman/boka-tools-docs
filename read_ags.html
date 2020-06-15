@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example &mdash; boka_tools 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="To Do" href="todo.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> boka_tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To Do</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">boka_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Help</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">boka_tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Example</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/read_ags.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="example">
+<h1>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">munch</span> <span class="k">import</span> <span class="n">Munch</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">hedset.utils.sql</span> <span class="k">import</span> <span class="n">server_connect</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">NVARCHAR</span><span class="p">,</span> <span class="n">VARCHAR</span><span class="p">,</span> <span class="n">FLOAT</span><span class="p">,</span> <span class="n">INTEGER</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder&#39;</span>
+
+<span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.ags&quot;</span><span class="p">):</span>
+        <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">file</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AGS</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ags_version</span><span class="o">=</span><span class="mf">3.1</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ags_version</span> <span class="o">=</span> <span class="n">ags_version</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ags_raw</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ags</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">Munch</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ags_version</span> <span class="o">==</span> <span class="mf">3.1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_ags_3</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_df</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ags_version</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_ags_4</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_df</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;This AGS version is not supported&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse_ags_3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ags_raw</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;**&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[A-Z]</span><span class="si">{4}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">group_line</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">if</span> <span class="s1">&#39;?&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">user_def</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">user_def</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[A-Z]</span><span class="si">{4}</span><span class="s1">_[A-Z,0-9]{2,4}\d?&#39;</span><span class="p">,</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">headers</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">header</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="n">start_block</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;&lt;UNITS&gt;&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">split_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&quot;,&quot;&#39;</span><span class="p">)</span>
+                <span class="n">len_block</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_line</span><span class="p">)</span>
+                <span class="n">len_header</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+                <span class="k">if</span> <span class="n">len_block</span><span class="o">==</span><span class="n">len_header</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;&quot;&lt;CONT&gt;&#39;</span> <span class="o">==</span> <span class="n">split_line</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                        <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">headers</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">split_line</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">header</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">header</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="n">split_line</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">header</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_parse_ags_4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_make_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_numeric</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ags</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">to_numeric</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">gint_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapper</span><span class="p">):</span>
+
+        <span class="n">renamed_df</span> <span class="o">=</span> <span class="n">Munch</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">mapper</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">mapper</span><span class="p">[</span><span class="n">mapper</span><span class="o">.</span><span class="n">group</span><span class="o">==</span><span class="n">group</span><span class="p">][[</span><span class="s1">&#39;ags_name&#39;</span><span class="p">,</span><span class="s1">&#39;gint_name&#39;</span><span class="p">]]</span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">ags_name</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">temp</span><span class="o">.</span><span class="n">values</span><span class="p">}</span>
+
+                <span class="n">temp_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">headers</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;date&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                        <span class="n">temp_df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">temp_df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;coerce&#39;</span><span class="p">)</span>
+
+                <span class="n">renamed_df</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_df</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">renamed_df</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">renamed_df</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">upload_to_gint</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">df_dict</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">gint_proj_id</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;POINT&#39;</span><span class="p">,</span> <span class="s1">&#39;SAMPLE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPECIMEN&#39;</span><span class="p">,</span> <span class="s1">&#39;STRATA_MAIN&#39;</span><span class="p">,</span> <span class="s1">&#39;IN_SITU_SPT&#39;</span><span class="p">,</span> <span class="s1">&#39;WEATHERING&#39;</span><span class="p">,</span> <span class="s1">&#39;LAB_SOIL_TRIAXIAL_EFFECTIVE&#39;</span><span class="p">,</span> <span class="s1">&#39;LAB_SOIL_SIEVE&#39;</span><span class="p">,</span> <span class="s1">&#39;HOLE_INFO_DEPTH&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">gint_table</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sequence</span><span class="p">[</span><span class="n">gint_table</span><span class="p">]</span> <span class="ow">in</span> <span class="n">df_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Uploading&#39;</span><span class="p">,</span> <span class="n">gint_table</span><span class="p">)</span>
+                <span class="n">df_upload</span> <span class="o">=</span> <span class="n">df_dict</span><span class="p">[</span><span class="n">sequence</span><span class="p">[</span><span class="n">gint_table</span><span class="p">]]</span>
+                <span class="n">df_upload</span><span class="p">[</span><span class="s1">&#39;gINTProjectID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+
+                <span class="k">if</span> <span class="n">gint_table</span> <span class="o">==</span> <span class="s1">&#39;POINT&#39;</span><span class="p">:</span>
+                    <span class="n">df_upload</span><span class="p">[</span><span class="s1">&#39;Processed_by&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getlogin</span><span class="p">()</span>
+                    <span class="n">df_upload</span><span class="p">[</span><span class="s1">&#39;Processed_Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+                    <span class="n">df_point_ids_in_gint</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;SELECT PointID FROM POINT WHERE gINTProjectID = </span><span class="si">{gint_proj_id}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span><span class="o">.</span><span class="n">PointID</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+                    <span class="n">df_upload</span> <span class="o">=</span> <span class="n">df_upload</span><span class="p">[</span><span class="o">~</span><span class="n">df_upload</span><span class="o">.</span><span class="n">PointID</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">df_point_ids_in_gint</span><span class="p">)]</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_upload</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;Depth&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_upload</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span> <span class="c1">#Depth cannot be nan</span>
+                        <span class="n">df_upload</span> <span class="o">=</span> <span class="n">df_upload</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Depth&#39;</span><span class="p">])</span>
+
+                    <span class="n">df_upload</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">gint_table</span><span class="p">,</span> <span class="n">engine</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ags = AGS(path)</span>
+<span class="n">rename</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;rename_mapper.xlsx&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="s1">&#39;A:C&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;group&quot;</span><span class="p">,</span><span class="s1">&#39;ags_name&#39;</span><span class="p">,</span><span class="s1">&#39;gint_name&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="c1"># renamed_df = ags.gint_mapper(rename)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">all_df</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+<span class="c1">#     print(file)</span>
+    <span class="n">ags</span> <span class="o">=</span> <span class="n">AGS</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;all_df&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+        <span class="n">all_df_temp</span> <span class="o">=</span> <span class="n">ags</span><span class="o">.</span><span class="n">df</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">all_df_temp</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">all_df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">all_df</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">all_df_temp</span><span class="p">[</span><span class="n">key</span><span class="p">]],</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">all_df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_df_temp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">all_df</span> <span class="o">=</span> <span class="n">ags</span><span class="o">.</span><span class="n">df</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+<span class="c1">#     print(file)</span>
+    <span class="n">ags</span> <span class="o">=</span> <span class="n">AGS</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;renamed_df&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">():</span>
+        <span class="n">renamed_df_temp</span> <span class="o">=</span> <span class="n">ags</span><span class="o">.</span><span class="n">gint_mapper</span><span class="p">(</span><span class="n">rename</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">renamed_df_temp</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">renamed_df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">renamed_df</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">renamed_df_temp</span><span class="p">[</span><span class="n">key</span><span class="p">]])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">renamed_df</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">renamed_df_temp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">renamed_df</span> <span class="o">=</span> <span class="n">ags</span><span class="o">.</span><span class="n">gint_mapper</span><span class="p">(</span><span class="n">rename</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre class="literal-block">D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-0-34(Preliminary) (2).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-0-34(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-0-35(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-0-36(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-0-37(Preliminary)_rev01.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-0-38(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-0-42(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-0-43(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-17(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-19(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-21(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-16(Preliminary)20191113.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-21(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-22(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-23(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-27(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-28(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-29(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-30(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-31(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-32(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-BC-33(Preliminary)20191108.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CBW-27A(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CBW-29A(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CBW-92(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CBW-COR-25(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-02(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-03(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-04(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-05(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-06(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-07(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-08(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-09(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-10(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-11(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-12(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-13(Preliminary)20191108.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-14(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-15(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-16(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CD-17(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CPS-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CS-02(Preliminary)20191113.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CS-03(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CS-15(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CS-16(Preliminary)20191107.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CS-17(Preliminary)20191107.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-CS-18(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-D-20(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-D-21(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-D-22(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-D-23(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-D-24(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-D-47(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-D-49(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-DA-22(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-DC6-02(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-DPS-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-DPS-02(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-ESS-03(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-IS-04(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-OS-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PC-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-POST-DA-16(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C3A-03(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C3C-02(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C3C-05(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C3C-07(Preliminary)20191107.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C4B-07(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C4B-08(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C6A-04(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C7A-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C8C-02(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C8C-02(Preliminary)_Rev01.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-PRE-C8C-04(Preliminary)20191108.ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-SUM-05(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-SUM-07(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-SUM-08(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-SW-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-SW-02(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-B17(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-C355(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-C4A-ZE25-PT1-03 (Internal)(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-C4A-ZE25-PT1-03(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-C4A-ZE25-PT1-04(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-C4A-ZE25-PT2-05(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-C4A-ZE25-PT2-06(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-C4B-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-C7A-02(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-05(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-06(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-07(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-14(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-15(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-17(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-18(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-19(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-20(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-21(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-22(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-23(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-24(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-25(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-26(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-27(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-28(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-29(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-37(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-38(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DA-39(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-01(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-02(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-03(2ND TIME)(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-03(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-04(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-05(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-06(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-07(Preliminary).ags
+D:UsersmbetOneDrive - boskalis.com9. PEnga. Pulau Tekong12. T-Drive07. SIsi_folderBH-VST-DC-08(Preliminary).ags</pre>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">depth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">su</span> <span class="o">=</span> <span class="n">depth</span> <span class="o">*</span> <span class="mf">6.5</span> <span class="o">*</span> <span class="mf">0.22</span>
+<span class="n">su_s28</span> <span class="o">=</span> <span class="n">depth</span> <span class="o">*</span> <span class="mf">6.5</span> <span class="o">*</span> <span class="mf">0.28</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">all_df</span><span class="o">.</span><span class="n">TRIG</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;TRIG_CU&#39;</span><span class="p">,</span><span class="s1">&#39;SPEC_DPTH&#39;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">su</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">su_s28</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">([</span><span class="mi">23</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span> <span class="n">at</span> <span class="mh">0x126b0cc0</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="output_8_1.png" src="output_8_1.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">all_df</span><span class="o">.</span><span class="n">TRIG</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;TRIG_TYPE&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="c1">#[all_df.TRIG.HOLE_ID==&#39;BH-12&#39;].sort_values(&#39;SPEC_DPTH&#39;)</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>HOLE_ID</th>
+      <th>SAMP_TOP</th>
+      <th>SAMP_REF</th>
+      <th>SAMP_TYPE</th>
+      <th>SPEC_REF</th>
+      <th>SPEC_DPTH</th>
+      <th>TRIG_COND</th>
+      <th>TRIG_REM</th>
+      <th>TRIG_CU</th>
+      <th>TRIG_COH</th>
+      <th>TRIG_PHI</th>
+      <th>FILE_FSET</th>
+      <th>SAMP_ID</th>
+    </tr>
+    <tr>
+      <th>TRIG_TYPE</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CU</th>
+      <td>64</td>
+      <td>64</td>
+      <td>64</td>
+      <td>64</td>
+      <td>64</td>
+      <td>64</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>64</td>
+      <td>64</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>UNC</th>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>UU</th>
+      <td>229</td>
+      <td>229</td>
+      <td>229</td>
+      <td>229</td>
+      <td>229</td>
+      <td>229</td>
+      <td>0</td>
+      <td>0</td>
+      <td>229</td>
+      <td>188</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div><div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ags_tables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">renamed_df</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="n">gint_tables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;POINT&#39;</span><span class="p">,</span> <span class="s1">&#39;STRATA_MAIN&#39;</span><span class="p">,</span> <span class="s1">&#39;IN_SITU_SPT&#39;</span><span class="p">,</span> <span class="s1">&#39;SAMPLE&#39;</span><span class="p">,</span> <span class="s1">&#39;WEATHERING&#39;</span><span class="p">,</span> <span class="s1">&#39;LAB_SOIL_TRIAXIAL_EFFECTIVE&#39;</span><span class="p">,</span> <span class="s1">&#39;LAB_SOIL_SIEVE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPECIMEN&#39;</span><span class="p">,</span> <span class="s1">&#39;HOLE_INFO_DEPTH&#39;</span><span class="p">]</span>
+
+<span class="n">sequence_mapper</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">y</span> <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ags_tables</span><span class="p">,</span> <span class="n">gint_tables</span><span class="p">)}</span>
+
+<span class="n">AGS</span><span class="o">.</span><span class="n">upload_to_gint</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">renamed_df</span><span class="p">,</span> <span class="n">sequence_mapper</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">renamed_df</span><span class="o">.</span><span class="n">HOLE</span><span class="p">[</span><span class="s1">&#39;gINTProjectID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">renamed_df</span><span class="o">.</span><span class="n">HOLE</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;##POINT&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">target_db</span> <span class="o">=</span> <span class="s1">&#39;PulauTekongGintDatgel&#39;</span>
+<span class="n">server</span> <span class="o">=</span> <span class="s1">&#39;10.64.32.62&#39;</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="n">server_connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">target_db</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;gint.p&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">gint</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">all_gint_tables</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">gint</span><span class="o">.</span><span class="n">tables</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;merge.sql&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">renamed_df</span><span class="p">[</span><span class="n">ags_table</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">gint_table</span> <span class="o">=</span> <span class="s1">&#39;SAMPLE&#39;</span>
+<span class="n">ags_table</span> <span class="o">=</span> <span class="s1">&#39;SAMP&#39;</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;gINTProjectID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">gint</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="n">gint_table</span><span class="p">]</span><span class="o">.</span><span class="n">indexes</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">gint_column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">gint</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="n">gint_table</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+<span class="n">gint_column_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">gint</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="n">gint_table</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+<span class="n">index_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">index</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+
+<span class="n">df_columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">df_column_type</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span>
+
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">index_columns</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_columns</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">gint_type</span> <span class="o">=</span> <span class="n">gint_column_types</span><span class="p">[</span><span class="n">gint_column_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">c</span><span class="p">)]</span>
+    <span class="n">renamed_df</span><span class="p">[</span><span class="n">ags_table</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="c1"># Change column data type</span>
+<span class="n">dtype_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_column_type</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_list</span><span class="p">()):</span>
+    <span class="n">gint_type</span> <span class="o">=</span> <span class="n">gint_column_types</span><span class="p">[</span><span class="n">gint_column_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">col</span><span class="p">)]</span>
+    <span class="n">dtype_dict</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">gint_type</span><span class="o">.</span><span class="n">python_type</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype_dict</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">c</span> <span class="ow">in</span> <span class="n">df_columns</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">index_columns</span><span class="p">]):</span>
+    <span class="n">match_statement_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">update_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">insert_cols_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">insert_values_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">index_columns</span><span class="p">:</span>
+        <span class="n">gint_column_names_idx</span> <span class="o">=</span> <span class="n">gint_column_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gint_column_types</span><span class="p">[</span><span class="n">gint_column_names_idx</span><span class="p">],</span> <span class="n">NVARCHAR</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gint_column_types</span><span class="p">[</span><span class="n">gint_column_names_idx</span><span class="p">],</span> <span class="n">VARCHAR</span><span class="p">):</span>
+            <span class="n">match_statement_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;SOURCE.</span><span class="si">{col}</span><span class="s1"> COLLATE Latin1_General_CI_AS = TARGET.</span><span class="si">{col}</span><span class="s1"> COLLATE Latin1_General_CI_AS&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">match_statement_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;SOURCE.</span><span class="si">{col}</span><span class="s1"> = TARGET.</span><span class="si">{col}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">match_statement</span> <span class="o">=</span> <span class="s1">&#39; AND </span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">match_statement_list</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_columns</span><span class="p">:</span>
+        <span class="n">update_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;TARGET.</span><span class="si">{col}</span><span class="s1"> = SOURCE.</span><span class="si">{col}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">insert_cols_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;[</span><span class="si">{col}</span><span class="s1">]&#39;</span><span class="p">)</span>
+        <span class="n">insert_values_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;SOURCE.[</span><span class="si">{col}</span><span class="s1">]&#39;</span><span class="p">)</span>
+
+    <span class="n">update</span> <span class="o">=</span> <span class="s1">&#39;, </span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">update_list</span><span class="p">)</span>
+    <span class="n">insert_cols</span> <span class="o">=</span> <span class="s1">&#39;, </span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">insert_cols_list</span><span class="p">)</span>
+    <span class="n">insert_values</span> <span class="o">=</span> <span class="s1">&#39;, </span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">insert_values_list</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;DataFrame in missing </span><span class="si">{}</span><span class="s1"> index column(s)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">index_columns</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df_columns</span><span class="p">]))</span>
+
+
+<span class="n">variables</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">target_db</span> <span class="o">=</span> <span class="n">target_db</span><span class="p">,</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{target_db}</span><span class="s1">.dbo.</span><span class="si">{gint_table}</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="s1">&#39;##&#39;</span><span class="o">+</span><span class="n">gint_table</span><span class="p">,</span>
+    <span class="n">match_statement</span> <span class="o">=</span> <span class="n">match_statement</span><span class="p">,</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="n">update</span><span class="p">,</span>
+    <span class="n">insert_cols</span> <span class="o">=</span> <span class="n">insert_cols</span><span class="p">,</span>
+    <span class="n">insert_values</span> <span class="o">=</span> <span class="n">insert_values</span>
+<span class="p">)</span>
+
+<span class="c1"># renamed_df[ags_table].to_sql(f&#39;##{gint_table}&#39;, engine, index=False)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">sql</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">USE</span> <span class="p">[</span><span class="n">PulauTekongGintDatgel</span><span class="p">]</span>
+<span class="n">GO</span>
+<span class="n">SET</span> <span class="n">ANSI_NULLS</span> <span class="n">ON</span>
+<span class="n">GO</span>
+<span class="n">SET</span> <span class="n">QUOTED_IDENTIFIER</span> <span class="n">ON</span>
+<span class="n">GO</span>
+
+<span class="n">BEGIN</span>
+    <span class="o">--</span> <span class="n">SET</span> <span class="n">NOCOUNT</span> <span class="n">ON</span> <span class="n">added</span> <span class="n">to</span> <span class="n">prevent</span> <span class="n">extra</span> <span class="n">result</span> <span class="n">sets</span> <span class="kn">from</span>
+    <span class="o">--</span> <span class="n">interfering</span> <span class="k">with</span> <span class="n">SELECT</span> <span class="n">statements</span><span class="o">.</span>
+    <span class="n">SET</span> <span class="n">NOCOUNT</span> <span class="n">ON</span><span class="p">;</span>
+
+<span class="n">SET</span> <span class="n">IDENTITY_INSERT</span> <span class="n">PulauTekongGintDatgel</span><span class="o">.</span><span class="n">dbo</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="n">OFF</span>
+<span class="n">MERGE</span> <span class="n">PulauTekongGintDatgel</span><span class="o">.</span><span class="n">dbo</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="n">AS</span> <span class="n">TARGET</span>
+    <span class="n">USING</span> <span class="c1">##SAMPLE AS SOURCE</span>
+    <span class="n">ON</span> <span class="p">(</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">gINTProjectID</span> <span class="o">=</span> <span class="n">TARGET</span><span class="o">.</span><span class="n">gINTProjectID</span> <span class="n">AND</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="n">PointID</span> <span class="n">COLLATE</span> <span class="n">Latin1_General_CI_AS</span> <span class="o">=</span> <span class="n">TARGET</span><span class="o">.</span><span class="n">PointID</span> <span class="n">COLLATE</span> <span class="n">Latin1_General_CI_AS</span> <span class="n">AND</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="n">Depth</span> <span class="o">=</span> <span class="n">TARGET</span><span class="o">.</span><span class="n">Depth</span> <span class="n">AND</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="n">Sample_Number</span> <span class="n">COLLATE</span> <span class="n">Latin1_General_CI_AS</span> <span class="o">=</span> <span class="n">TARGET</span><span class="o">.</span><span class="n">Sample_Number</span> <span class="n">COLLATE</span> <span class="n">Latin1_General_CI_AS</span> <span class="n">AND</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="n">Sample_Type</span> <span class="n">COLLATE</span> <span class="n">Latin1_General_CI_AS</span> <span class="o">=</span> <span class="n">TARGET</span><span class="o">.</span><span class="n">Sample_Type</span> <span class="n">COLLATE</span> <span class="n">Latin1_General_CI_AS</span> <span class="n">AND</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="n">Sample_ID</span> <span class="n">COLLATE</span> <span class="n">Latin1_General_CI_AS</span> <span class="o">=</span> <span class="n">TARGET</span><span class="o">.</span><span class="n">Sample_ID</span> <span class="n">COLLATE</span> <span class="n">Latin1_General_CI_AS</span> <span class="p">)</span>
+    <span class="n">WHEN</span> <span class="n">MATCHED</span> <span class="n">THEN</span>
+    <span class="n">UPDATE</span> <span class="n">SET</span> <span class="n">TARGET</span><span class="o">.</span><span class="n">PointID</span> <span class="o">=</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">PointID</span><span class="p">,</span>
+    <span class="n">TARGET</span><span class="o">.</span><span class="n">Depth</span> <span class="o">=</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">Depth</span><span class="p">,</span>
+    <span class="n">TARGET</span><span class="o">.</span><span class="n">Sample_Number</span> <span class="o">=</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">Sample_Number</span><span class="p">,</span>
+    <span class="n">TARGET</span><span class="o">.</span><span class="n">Sample_Type</span> <span class="o">=</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">Sample_Type</span><span class="p">,</span>
+    <span class="n">TARGET</span><span class="o">.</span><span class="n">Bottom</span> <span class="o">=</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">Bottom</span><span class="p">,</span>
+    <span class="n">TARGET</span><span class="o">.</span><span class="n">Remark</span> <span class="o">=</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">Remark</span><span class="p">,</span>
+    <span class="n">TARGET</span><span class="o">.</span><span class="n">Sample_ID</span> <span class="o">=</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">Sample_ID</span><span class="p">,</span>
+    <span class="n">TARGET</span><span class="o">.</span><span class="n">gINTProjectID</span> <span class="o">=</span> <span class="n">SOURCE</span><span class="o">.</span><span class="n">gINTProjectID</span>
+
+    <span class="n">WHEN</span> <span class="n">NOT</span> <span class="n">MATCHED</span> <span class="n">THEN</span>
+    <span class="n">INSERT</span> <span class="p">(</span> <span class="p">[</span><span class="n">PointID</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">Depth</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">Sample_Number</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">Sample_Type</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">Bottom</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">Remark</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">Sample_ID</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">gINTProjectID</span><span class="p">]</span> <span class="p">)</span>
+    <span class="n">VALUES</span> <span class="p">(</span> <span class="n">SOURCE</span><span class="o">.</span><span class="p">[</span><span class="n">PointID</span><span class="p">],</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="p">[</span><span class="n">Depth</span><span class="p">],</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="p">[</span><span class="n">Sample_Number</span><span class="p">],</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="p">[</span><span class="n">Sample_Type</span><span class="p">],</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="p">[</span><span class="n">Bottom</span><span class="p">],</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="p">[</span><span class="n">Remark</span><span class="p">],</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="p">[</span><span class="n">Sample_ID</span><span class="p">],</span>
+    <span class="n">SOURCE</span><span class="o">.</span><span class="p">[</span><span class="n">gINTProjectID</span><span class="p">]</span> <span class="p">)</span>
+<span class="p">;</span>
+<span class="n">SET</span> <span class="n">ANSI_WARNINGS</span> <span class="n">ON</span>
+
+<span class="n">END</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="todo.html" class="btn btn-neutral float-right" title="To Do" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Maarten Betman
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

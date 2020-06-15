@@ -1,0 +1,13 @@
+License
+=======
+    Copyright (C) 2020,  Maarten Betman
+    DTED, Hydronamic, Boskalis International
+
+    This program is software to be used within the Boskalis organization.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY;
+    Distributing output to third parties, like Employers or Engineers is
+    at user discretion.
+
+For any additional information, contact maarten.betman@boskalis.com

@@ -1,0 +1,830 @@
+This section will contain some brief examples on the usage of the various available modules.
+Following examples are provided:
+
+1. Loading and parsing a Primavera P6 xer files
+2. Plotting a P6-style gantt chart using Excel planning input
+3. Plotting CPT data
+4. Loading and Parsing AGS files
+5. Creating a SQL engine to query data from Microsoft SQL Server
+
+========
+Examples
+========
+
+1. Loading and parsing a Primavera P6 xer files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+import the ``P6`` module
+
+.. code:: python
+
+    from boka_tools.planning import P6
+
+| Create a P6 object by passing in the location of the xer file
+| This can either be a relative or absolute path
+
+.. code:: python
+
+    # relative path to xer file
+    path_to_xer = './xer/20200514_B5_R0.xer'
+    # Create the P6 object. Object name can be freely chosen. I choose xer in this case
+    xer = P6(path_to_xer)
+
+    # Call the xer object. When called a string representation of the available tables will be returned
+    xer
+
+
+
+
+.. parsed-literal::
+
+    ['CURRTYPE', 'MEMOTYPE', 'OBS', 'PCATTYPE', 'UDFTYPE', 'UMEASURE', 'PCATVAL', 'PROJECT', 'CALENDAR', 'PROJPCAT', 'SCHEDOPTIONS', 'PROJWBS', 'RSRC', 'ACTVTYPE', 'RSRCRATE', 'TASK', 'ACTVCODE', 'TASKMEMO', 'TASKPRED', 'TASKPROC', 'TASKRSRC', 'TASKACTV', 'UDFVALUE']
+
+
+
+| Most important is probably the TASK table containing all activities.
+  Most table names are pretty self explanatory.
+| If you want to know more on the P6 schema, please refer to
+  https://docs.oracle.com/cd/E20686_01/helpmain.htm?toc.htm?schema_documentation.htm
+
+Now lets look at the first 10 rows of the TASK DataFrame attribute in
+the created xer object
+
+.. code:: python
+
+    # first 10 rows of a small selection of the collumns
+    # task_name contains the names of the task of course and would have been nice to show, but due to project restriction this cannot be shared.
+    xer.xer_df.task.head(10)[['task_id', 'act_start_date', 'act_end_date', 'target_start_date', 'target_end_date']]
+
+
+
+
+.. raw:: html
+
+    <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>task_id</th>
+          <th>act_start_date</th>
+          <th>act_end_date</th>
+          <th>target_start_date</th>
+          <th>target_end_date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0</th>
+          <td>523198</td>
+          <td>2019-10-18 00:00:00</td>
+          <td>2019-11-07 00:00:00</td>
+          <td>2019-11-25 09:00:00</td>
+          <td>2019-12-12 17:00:00</td>
+        </tr>
+        <tr>
+          <th>1</th>
+          <td>523199</td>
+          <td>2019-10-18 00:00:00</td>
+          <td>2019-10-18 00:00:00</td>
+          <td>2019-11-25 09:00:00</td>
+          <td>2019-11-25 09:00:00</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td>523200</td>
+          <td>2019-03-15 09:00:00</td>
+          <td>2019-03-15 09:00:00</td>
+          <td>2019-03-15 09:00:00</td>
+          <td>2019-03-15 09:00:00</td>
+        </tr>
+        <tr>
+          <th>3</th>
+          <td>523201</td>
+          <td>2019-10-11 00:00:00</td>
+          <td>2019-10-11 00:00:00</td>
+          <td>2019-11-25 09:00:00</td>
+          <td>2019-11-25 09:00:00</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td>523202</td>
+          <td>2019-07-24 00:00:00</td>
+          <td>2019-10-18 00:00:00</td>
+          <td>2019-07-25 09:00:00</td>
+          <td>2020-01-15 17:00:00</td>
+        </tr>
+        <tr>
+          <th>5</th>
+          <td>523203</td>
+          <td>NaT</td>
+          <td>NaT</td>
+          <td>2021-12-30 07:30:00</td>
+          <td>2022-01-28 18:30:00</td>
+        </tr>
+        <tr>
+          <th>6</th>
+          <td>523204</td>
+          <td>NaT</td>
+          <td>NaT</td>
+          <td>2021-11-29 07:30:00</td>
+          <td>2021-12-29 18:30:00</td>
+        </tr>
+        <tr>
+          <th>7</th>
+          <td>523205</td>
+          <td>NaT</td>
+          <td>NaT</td>
+          <td>2021-10-05 07:30:00</td>
+          <td>2021-10-06 18:30:00</td>
+        </tr>
+        <tr>
+          <th>8</th>
+          <td>523206</td>
+          <td>NaT</td>
+          <td>NaT</td>
+          <td>2021-10-12 07:30:00</td>
+          <td>2021-10-13 18:30:00</td>
+        </tr>
+        <tr>
+          <th>9</th>
+          <td>523207</td>
+          <td>NaT</td>
+          <td>NaT</td>
+          <td>2021-09-28 07:30:00</td>
+          <td>2021-09-29 18:30:00</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+| The xer_df attribute contains a dictionary of all tables in the xer
+  file parsed as Pandas DataFrame.
+| Since the are pandas data frames they can be save to Excel easily.
+
+To assist a method has been built-in to the P6 object to save all tables
+to a single File where each table in represented in a differt sheet.
+
+.. code:: python
+
+    xer.to_excel('xer - tasks.xlsx')
+
+.. code:: python
+
+    # to see all available columns in the task table lets print them
+    for col in xer.xer_df.task.columns:
+        print(col)
+
+
+.. parsed-literal::
+
+    task_id
+    proj_id
+    wbs_id
+    clndr_id
+    phys_complete_pct
+    rev_fdbk_flag
+    est_wt
+    lock_plan_flag
+    auto_compute_act_flag
+    complete_pct_type
+    task_type
+    duration_type
+    status_code
+    task_code
+    task_name
+    rsrc_id
+    total_float_hr_cnt
+    free_float_hr_cnt
+    remain_drtn_hr_cnt
+    act_work_qty
+    remain_work_qty
+    target_work_qty
+    target_drtn_hr_cnt
+    target_equip_qty
+    act_equip_qty
+    remain_equip_qty
+    cstr_date
+    act_start_date
+    act_end_date
+    late_start_date
+    late_end_date
+    expect_end_date
+    early_start_date
+    early_end_date
+    restart_date
+    reend_date
+    target_start_date
+    target_end_date
+    rem_late_start_date
+    rem_late_end_date
+    cstr_type
+    priority_type
+    suspend_date
+    resume_date
+    float_path
+    float_path_order
+    guid
+    tmpl_guid
+    cstr_date2
+    cstr_type2
+    driving_path_flag
+    act_this_per_work_qty
+    act_this_per_equip_qty
+    external_early_start_date
+    external_late_end_date
+    create_date
+    update_date
+    create_user
+    update_user
+    location_id
+
+
+
+2. Plotting a P6-style gantt chart using Excel planning input
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+| import the the ``gantt`` function.
+| Also import ``pandas`` and ``numpy`` to load the sample data into a DataFrame
+  and get the date extents for plotting
+
+.. code:: python
+
+    import pandas as pd
+    import numpy as np
+    from boka_tools.planning import gantt
+
+Load the sample data
+
+.. code:: python
+
+    data = pd.read_excel('./gantt sample data.xlsx')
+
+    # get min and max dates, and set the actual start and end dates to begining and ends of the respective months
+    datemin = np.datetime64(data['Planned_Start'].min(), 'M') - np.timedelta64(1, 'M')
+    datemax = np.datetime64(data['Planned_End'].max(), 'M') + np.timedelta64(1, 'M')
+
+| Check documentation for further guidance on naming convention of the
+  columns to plot the tasks correctly, or how to change them
+| via the parameters
+
+.. code:: python
+
+    # Print first 5 rows
+    data.head()
+
+
+
+
+.. raw:: html
+
+    <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>ID</th>
+          <th>Area</th>
+          <th>Panel</th>
+          <th>Task</th>
+          <th>Status</th>
+          <th>Planned_Start</th>
+          <th>Actual_Start</th>
+          <th>Planned_End</th>
+          <th>Actual_End</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0</th>
+          <td>17325</td>
+          <td>G</td>
+          <td>10</td>
+          <td>Sand Capping</td>
+          <td>No Status</td>
+          <td>2020-04-06</td>
+          <td>NaT</td>
+          <td>2021-01-25</td>
+          <td>NaT</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>1</th>
+          <td>18695</td>
+          <td>G</td>
+          <td>10</td>
+          <td>Monitoring</td>
+          <td>No Status</td>
+          <td>2020-04-20</td>
+          <td>NaT</td>
+          <td>2020-04-27</td>
+          <td>NaT</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td>18010</td>
+          <td>G</td>
+          <td>10</td>
+          <td>PRE-SIW-SI</td>
+          <td>No Status</td>
+          <td>2021-01-22</td>
+          <td>NaT</td>
+          <td>2021-01-29</td>
+          <td>NaT</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>3</th>
+          <td>5032</td>
+          <td>G</td>
+          <td>10</td>
+          <td>PVD Shop Drawings</td>
+          <td>Approved</td>
+          <td>2021-01-18</td>
+          <td>NaT</td>
+          <td>2021-01-25</td>
+          <td>NaT</td>
+          <td>NaN</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td>5033</td>
+          <td>G</td>
+          <td>10</td>
+          <td>PVD Trials</td>
+          <td>Not Started</td>
+          <td>2021-01-26</td>
+          <td>NaT</td>
+          <td>2021-02-02</td>
+          <td>NaT</td>
+          <td>NaN</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+Specify which columns to show in the table of the gantt chart
+
+.. code:: python
+
+    cols_table=['Panel', 'Task', 'Planned_Start', 'Planned_End', 'Actual_Start', 'Actual_End']
+
+| plot the gantt chart.
+| A warning is given because the DataFrame had more than 80 lines.
+
+The planning can also be saved as pdf. Check documentation on how to do
+this.
+
+How to split DataFrame and loop over 80-line section to compile into a
+multipage planning will be shown in future releases.
+
+.. code:: python
+
+    gantt(data, datemin, datemax, cols_table=cols_table)
+
+
+
+
+.. image:: output_10_0.png
+
+
+
+
+3. Plotting CPT data
+^^^^^^^^^^^^^^^^^^^^
+| import the ``ParseGEF`` module (external package from ``pygef``, made by
+  Ritchie Vink)
+| and the ```plot_si_result`` function
+
+.. code:: python
+
+    from boka_tools.soil_investigation import ParseGEF, plot_si_results
+    import math
+    from datetime import datetime
+    import numpy as np
+
+load a gef file
+
+.. code:: python
+
+    # load file
+    gef = ParseGEF('./gef/CPT-I-50.GEF')
+
+    # extract df for easy reference
+    df = gef.df
+
+    # print to 5 rows
+    df.head()
+
+
+
+
+.. raw:: html
+
+    <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>penetration_length</th>
+          <th>qc</th>
+          <th>fs</th>
+          <th>u2</th>
+          <th>inclination_NS</th>
+          <th>inclination_EW</th>
+          <th>column_code=7</th>
+          <th>time</th>
+          <th>depth</th>
+          <th>elevation_with_respect_to_NAP</th>
+          <th>friction_number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>0</th>
+          <td>0.00</td>
+          <td>0.001558</td>
+          <td>0.0</td>
+          <td>0.000201</td>
+          <td>0.341880</td>
+          <td>1.222222</td>
+          <td>1.330128</td>
+          <td>10.00</td>
+          <td>0.00</td>
+          <td>6.83</td>
+          <td>0.0</td>
+        </tr>
+        <tr>
+          <th>1</th>
+          <td>0.01</td>
+          <td>0.014019</td>
+          <td>0.0</td>
+          <td>0.000201</td>
+          <td>0.064103</td>
+          <td>1.266667</td>
+          <td>18.974360</td>
+          <td>11.00</td>
+          <td>0.01</td>
+          <td>6.82</td>
+          <td>0.0</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td>0.02</td>
+          <td>0.021807</td>
+          <td>0.0</td>
+          <td>0.000201</td>
+          <td>-0.021930</td>
+          <td>1.333333</td>
+          <td>31.426280</td>
+          <td>11.59</td>
+          <td>0.02</td>
+          <td>6.81</td>
+          <td>0.0</td>
+        </tr>
+        <tr>
+          <th>3</th>
+          <td>0.03</td>
+          <td>0.052959</td>
+          <td>0.0</td>
+          <td>0.000201</td>
+          <td>0.128205</td>
+          <td>1.333333</td>
+          <td>30.785260</td>
+          <td>12.09</td>
+          <td>0.03</td>
+          <td>6.80</td>
+          <td>0.0</td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td>0.04</td>
+          <td>0.068536</td>
+          <td>0.0</td>
+          <td>0.000201</td>
+          <td>-0.175439</td>
+          <td>1.377778</td>
+          <td>31.682690</td>
+          <td>12.56</td>
+          <td>0.04</td>
+          <td>6.79</td>
+          <td>0.0</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+| Create a JSON object containing all the plot properties.
+| For the JSON schema, please check the documentation
+
+.. code:: python
+
+    # get max and min depths and round up/down respectively
+    ymin, ymax = math.floor(df.elevation_with_respect_to_NAP.min()), math.ceil(df.elevation_with_respect_to_NAP.max())
+
+    # set the meter tick interval
+    y_int = 2
+
+    # make the json object
+    plot_props = dict(
+        plots = dict(
+            y_data = df.elevation_with_respect_to_NAP.values,
+            plot_1 = dict(
+                ax = 'ax1',
+                name = 'qc',
+                type = 'plot',
+                x_data = df.qc.values,
+                kwargs = dict(color= 'black', ls= '-', lw= 1.5, label= 'qc')
+            ),
+            plot_2 = dict(
+                ax = 'ax1_2',
+                name = 'Rf',
+                type = 'plot',
+                x_data = df.friction_number.values,
+                kwargs = dict(color='red', lw=1, label='Rf')
+            ),
+            plot_3 = dict(
+                ax = 'ax2',
+                name = 'fs',
+                type = 'plot',
+                x_data = df.fs.values,
+                kwargs = dict(color= 'orange',ls = '-', lw=1,  label = 'fs'),
+            ),
+            plot_4 = dict(
+                ax = 'ax3',
+                name = 'u2',
+                type = 'plot',
+                x_data = df.u2.values,
+                kwargs = dict(color= 'blue', ls= '-', lw= 1., label= 'u2'),
+            )
+        ),
+        axes = dict(
+            num = 3,
+            widths = [0.5, 0.25, 0.25],
+            kwargs = dict(
+                ax1 = dict(xlim=[0,10], xlabel='qt [MPa]', ylabel='Elevation [m+CD]'),
+                ax2 = dict(xlim=[0,0.50], xlabel='fs [MPa]'),
+                ax3 = dict(xlim=[0,1], xlabel='u2 [MPa]'),
+                all = dict(ylim=[ymin, ymax], yticks=[x for x in range(ymin, ymax+y_int, y_int)])
+            ),
+            twiny = dict(
+                ax1_2 = dict(
+                    twin='ax1',
+                    kwargs=dict(
+                        xticks=[x for x in range(0,6,1)],
+                        xticklabels=['' if x==0 else str(x) for x in range(0,6,1)],
+                        xlim=[25,0],
+                        xlabel='Rf [%]'
+                    )
+                )
+            )
+        ),
+        layout = dict(
+            papersize='A4',
+            margins = [1,1,1,1],
+            logo = './hydronamic.tif'
+        ),
+        info = dict(
+            pointid = ['CPT-TEST-01'],
+            row_spacing = np.linspace(0.6, 0.1, 5),
+            general_titles = ['CLIENT', 'ENGINEER', 'AC', 'CONTRACTOR', 'PROJECT'],
+            general_values = ['Client A', 'Consultant A', 'Consultant B', 'Boskalis', 'A Nice Reclamation Project'],
+            location_titles = ['AREA', 'PANEL', 'EASTING', 'NORTHING', 'ELEVATION'],
+            location_values = ['A', '10', '24564', '4436l', '3.46'],
+            location_units = ['','','','',' m+CD'],
+            version_titles = ['CPT DATE', 'PRINT DATE', 'PREPARED BY', 'CHECKED BY', 'APPROVED BY'],
+            version_values = ['01-Jan-2020', datetime.now().strftime('%d-%b-%Y'), 'MBET', 'MBET', 'MBET']
+        )
+    )
+
+
+Pass the plot_props json object to the plot_si_results function
+
+.. code:: python
+
+    # create figure
+    fig = plot_si_results(plot_props)
+
+    # show figure
+    fig
+
+
+
+
+.. image:: output_8_0.png
+
+
+
+| The figure can be saved as pdf by calling the matplotlib savefig
+  method.
+| For other output formats, see the matplotlib documentation.
+
+.. code:: python
+
+    fig.savefig('cpt-test-01.pdf')
+
+
+
+
+4. Loading and Parsing AGS files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Import the ``AGS`` module
+
+.. code:: python
+
+    from boka_tools.soil_investigation import AGS
+
+Load AGS file from specified path
+
+.. code:: python
+
+    path_to_file = './ags/test_ags.ags'
+    ags = AGS(path_to_file)
+
+print all keys to check what tables are available
+
+.. code:: python
+
+    for key in ags.df:
+        print(key)
+
+
+.. parsed-literal::
+
+    PROJ
+    ABBR
+    HOLE
+    DICT
+    UNIT
+    GEOL
+    ISPT
+    SAMP
+    WETH
+    TRIG
+    GRAD
+    PTST
+    CLSS
+    HDPH
+
+
+| Call the HOLE table showing the HOLE info from the AGS file.
+| Transpose and dropna functions are called to increase readability and
+  hide nan values.
+
+.. code:: python
+
+    ags.df.HOLE.T.dropna()
+
+
+.. raw:: html
+
+    <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>0</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>HOLE_ID</th>
+          <td>BH-CBW-40</td>
+        </tr>
+        <tr>
+          <th>HOLE_TYPE</th>
+          <td>RO</td>
+        </tr>
+        <tr>
+          <th>HOLE_NATE</th>
+          <td>48678.9</td>
+        </tr>
+        <tr>
+          <th>HOLE_NATN</th>
+          <td>43408.6</td>
+        </tr>
+        <tr>
+          <th>HOLE_GL</th>
+          <td>4.846</td>
+        </tr>
+        <tr>
+          <th>HOLE_FDEP</th>
+          <td>38.16</td>
+        </tr>
+        <tr>
+          <th>HOLE_STAR</th>
+          <td>28/01/2019</td>
+        </tr>
+        <tr>
+          <th>HOLE_ENDD</th>
+          <td>01/02/2019</td>
+        </tr>
+        <tr>
+          <th>HOLE_GWL</th>
+          <td>3.38</td>
+        </tr>
+        <tr>
+          <th>HOLE_CHK</th>
+          <td>Khine</td>
+        </tr>
+        <tr>
+          <th>HOLE_APP</th>
+          <td>Tada</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+
+5. Creating a SQL engine to query data from Microsoft SQL Server
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+| SQL engines are often used to collect and store data.
+| the ``server_connect`` function creates an easy manner to connect to a
+  MSSQL server to retrieve and store data
+
+.. code:: python
+
+    from boka_tools import server_connect
+
+.. code:: python
+
+    # Set server address and database name for connection
+    SERVER = 'localhost'
+    DATABASE = 'EngDepPT'
+
+    engine = server_connect(SERVER, DATABASE)
+
+Check the engine string out
+
+.. code:: python
+
+    engine
+
+
+.. parsed-literal::
+
+    Engine(mssql+pyodbc:///?odbc_connect=Driver={SQL Server};Server=localhost;Database=EngDepPT;UID=api;PWD=api)
+
+

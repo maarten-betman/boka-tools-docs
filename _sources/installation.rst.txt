@@ -1,0 +1,53 @@
+Installation
+============
+
+Getting started
+---------------
+In order to get started you will need to download the latest distribution wheel.
+A wheel is a built package that can be installed without needing to go through the `build` process.
+Installing wheels is substantially faster for the end user than installing from a source distribution.
+
+To install the package follow instructions below:
+
+1. Open a commandline console via start menu > Start > cmd >
+2. Navigate to download location of installation wheel::
+
+    C:\users\[user]> cd C:\path\to\wheel
+
+3. Run pip to install the wheel into you Python installation::
+
+    C:\path\to\wheel> pip install boka_tools_py3_none_any.whl
+    > boka_tools succesfully installed
+
+Note that if you want to install using `pip`, you will need to have Python and pip registered to your
+PATH variable. If you don't have `pip` registered to your path you will see the following error message::
+
+    'pip' is not recognized as an internal or external command,
+    operable program or batch file.
+
+To register `pip` to your PATH please follow these instructions: https://datatofish.com/add-python-to-windows-path/
+
+Dependencies
+------------
+Following packages need to be installed to run boka-tools
+
+- pandas>=1.0.4
+- SQLAlchemy>=1.3.17
+- numpy>=1.18.5
+- matplotlib>=3.2.1
+- munch>=2.5.0
+- pygef>=0.4
+
+Optional
+________
+Following Packages can optionally be installed to get more functionality.
+
+- GDAL
+- Shapely
+- rasterio
+- Fiona
+- GeoPandas
+
+The packages are not readily available through pypi. You will have to download the
+correct distribution wheel from https://www.lfd.uci.edu/~gohlke/pythonlibs/ and install
+them with `pip`.

@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>boka_tools.utils package &mdash; boka_tools 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="boka_tools.soil_investigation package" href="boka_tools.soil_investigation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> boka_tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="read_ags.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To Do</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">boka_tools</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="boka_tools.html">boka_tools package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="boka_tools.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="boka_tools.planning.html">boka_tools.planning package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="boka_tools.soil_investigation.html">boka_tools.soil_investigation package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">boka_tools.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="boka_tools.html#module-boka_tools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Help</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">boka_tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">boka_tools</a> &raquo;</li>
+        
+          <li><a href="boka_tools.html">boka_tools package</a> &raquo;</li>
+        
+      <li>boka_tools.utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/boka_tools.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="boka-tools-utils-package">
+<h1>boka_tools.utils package<a class="headerlink" href="#boka-tools-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-boka_tools.utils.sql">
+<span id="boka-tools-utils-sql-module"></span><h2>boka_tools.utils.sql module<a class="headerlink" href="#module-boka_tools.utils.sql" title="Permalink to this headline">¶</a></h2>
+<p>Methods to make sql engines and query spatial data from MS SQL Server and return it into a pandas DataFrame.</p>
+<dl class="function">
+<dt id="boka_tools.utils.sql.mssql_geom">
+<code class="sig-prename descclassname">boka_tools.utils.sql.</code><code class="sig-name descname">mssql_geom</code><span class="sig-paren">(</span><em class="sig-param">sql: str</em>, <em class="sig-param">engine: object</em><span class="sig-paren">)</span> &#x2192; object<a class="headerlink" href="#boka_tools.utils.sql.mssql_geom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pass Microsoft SQL statement and return a Geopandas dataframe
+Geometry columns should be named “geometry” in sql statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sql</strong> (<em>str</em>) – T-SQL statement with a Spatial geometry column passed as ‘geometry’
+in Well Known Text (wkt) via the T-SQL function &gt; [GEOM].STAsText()</p></li>
+<li><p><strong>engine</strong> (<em>object</em>) – SQL Alchemy engine should be passed into function. Assuming engine
+is already made under the variable ‘engine’ it is passed by default</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a GeoPandas DataFrame</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – is STAsText T-SQL Syntac is not detected in sql string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="boka_tools.utils.sql.server_connect">
+<code class="sig-prename descclassname">boka_tools.utils.sql.</code><code class="sig-name descname">server_connect</code><span class="sig-paren">(</span><em class="sig-param">server: str</em>, <em class="sig-param">database: str</em>, <em class="sig-param">trusted_connection: bool = False</em>, <em class="sig-param">user: str = 'api'</em>, <em class="sig-param">password: str = 'api'</em><span class="sig-paren">)</span> &#x2192; object<a class="headerlink" href="#boka_tools.utils.sql.server_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates and server engine that can be used to query data from SQL server using Pandas</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>server</strong> (<em>str</em>) – Server location</p></li>
+<li><p><strong>database</strong> (<em>str</em>) – Database name</p></li>
+<li><p><strong>trusted_connection</strong> (<em>bool</em>) – Designates if the connection is Trusted or not,
+When set to False and correct username and password must be entered, Boolean</p></li>
+<li><p><strong>user</strong> (<em>str</em>) – Optional, username used to access the server if TrustedConnection is False</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – Optional, password to entered username to access the server</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a SQLAlchemy engine</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-boka_tools.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-boka_tools.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="boka_tools.soil_investigation.html" class="btn btn-neutral float-left" title="boka_tools.soil_investigation package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Maarten Betman
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

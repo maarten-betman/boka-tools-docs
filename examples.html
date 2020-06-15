@@ -1,0 +1,977 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Examples &mdash; boka_tools 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="To Do" href="todo.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> boka_tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#loading-and-parsing-a-primavera-p6-xer-files">1. Loading and parsing a Primavera P6 xer files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotting-a-p6-style-gantt-chart-using-excel-planning-input">2. Plotting a P6-style gantt chart using Excel planning input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotting-cpt-data">3. Plotting CPT data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-and-parsing-ags-files">4. Loading and Parsing AGS files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-sql-engine-to-query-data-from-microsoft-sql-server">5. Creating a SQL engine to query data from Microsoft SQL Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To Do</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">boka_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Help</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">boka_tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<p>This section will contain some brief examples on the usage of the various available modules.
+Following examples are provided:</p>
+<ol class="arabic simple">
+<li><p>Loading and parsing a Primavera P6 xer files</p></li>
+<li><p>Plotting a P6-style gantt chart using Excel planning input</p></li>
+<li><p>Plotting CPT data</p></li>
+<li><p>Loading and Parsing AGS files</p></li>
+<li><p>Creating a SQL engine to query data from Microsoft SQL Server</p></li>
+</ol>
+<div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="loading-and-parsing-a-primavera-p6-xer-files">
+<h2>1. Loading and parsing a Primavera P6 xer files<a class="headerlink" href="#loading-and-parsing-a-primavera-p6-xer-files" title="Permalink to this headline">¶</a></h2>
+<p>import the <code class="docutils literal notranslate"><span class="pre">P6</span></code> module</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">boka_tools.planning</span> <span class="kn">import</span> <span class="n">P6</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Create a P6 object by passing in the location of the xer file</div>
+<div class="line">This can either be a relative or absolute path</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># relative path to xer file</span>
+<span class="n">path_to_xer</span> <span class="o">=</span> <span class="s1">&#39;./xer/20200514_B5_R0.xer&#39;</span>
+<span class="c1"># Create the P6 object. Object name can be freely chosen. I choose xer in this case</span>
+<span class="n">xer</span> <span class="o">=</span> <span class="n">P6</span><span class="p">(</span><span class="n">path_to_xer</span><span class="p">)</span>
+
+<span class="c1"># Call the xer object. When called a string representation of the available tables will be returned</span>
+<span class="n">xer</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;CURRTYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;MEMOTYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;OBS&#39;</span><span class="p">,</span> <span class="s1">&#39;PCATTYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;UDFTYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;UMEASURE&#39;</span><span class="p">,</span> <span class="s1">&#39;PCATVAL&#39;</span><span class="p">,</span> <span class="s1">&#39;PROJECT&#39;</span><span class="p">,</span> <span class="s1">&#39;CALENDAR&#39;</span><span class="p">,</span> <span class="s1">&#39;PROJPCAT&#39;</span><span class="p">,</span> <span class="s1">&#39;SCHEDOPTIONS&#39;</span><span class="p">,</span> <span class="s1">&#39;PROJWBS&#39;</span><span class="p">,</span> <span class="s1">&#39;RSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;ACTVTYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;RSRCRATE&#39;</span><span class="p">,</span> <span class="s1">&#39;TASK&#39;</span><span class="p">,</span> <span class="s1">&#39;ACTVCODE&#39;</span><span class="p">,</span> <span class="s1">&#39;TASKMEMO&#39;</span><span class="p">,</span> <span class="s1">&#39;TASKPRED&#39;</span><span class="p">,</span> <span class="s1">&#39;TASKPROC&#39;</span><span class="p">,</span> <span class="s1">&#39;TASKRSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;TASKACTV&#39;</span><span class="p">,</span> <span class="s1">&#39;UDFVALUE&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Most important is probably the TASK table containing all activities.
+Most table names are pretty self explanatory.</div>
+<div class="line">If you want to know more on the P6 schema, please refer to
+<a class="reference external" href="https://docs.oracle.com/cd/E20686_01/helpmain.htm?toc.htm">https://docs.oracle.com/cd/E20686_01/helpmain.htm?toc.htm</a>?schema_documentation.htm</div>
+</div>
+<p>Now lets look at the first 10 rows of the TASK DataFrame attribute in
+the created xer object</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># first 10 rows of a small selection of the collumns</span>
+<span class="c1"># task_name contains the names of the task of course and would have been nice to show, but due to project restriction this cannot be shared.</span>
+<span class="n">xer</span><span class="o">.</span><span class="n">xer_df</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)[[</span><span class="s1">&#39;task_id&#39;</span><span class="p">,</span> <span class="s1">&#39;act_start_date&#39;</span><span class="p">,</span> <span class="s1">&#39;act_end_date&#39;</span><span class="p">,</span> <span class="s1">&#39;target_start_date&#39;</span><span class="p">,</span> <span class="s1">&#39;target_end_date&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>task_id</th>
+      <th>act_start_date</th>
+      <th>act_end_date</th>
+      <th>target_start_date</th>
+      <th>target_end_date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>523198</td>
+      <td>2019-10-18 00:00:00</td>
+      <td>2019-11-07 00:00:00</td>
+      <td>2019-11-25 09:00:00</td>
+      <td>2019-12-12 17:00:00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>523199</td>
+      <td>2019-10-18 00:00:00</td>
+      <td>2019-10-18 00:00:00</td>
+      <td>2019-11-25 09:00:00</td>
+      <td>2019-11-25 09:00:00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>523200</td>
+      <td>2019-03-15 09:00:00</td>
+      <td>2019-03-15 09:00:00</td>
+      <td>2019-03-15 09:00:00</td>
+      <td>2019-03-15 09:00:00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>523201</td>
+      <td>2019-10-11 00:00:00</td>
+      <td>2019-10-11 00:00:00</td>
+      <td>2019-11-25 09:00:00</td>
+      <td>2019-11-25 09:00:00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>523202</td>
+      <td>2019-07-24 00:00:00</td>
+      <td>2019-10-18 00:00:00</td>
+      <td>2019-07-25 09:00:00</td>
+      <td>2020-01-15 17:00:00</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>523203</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>2021-12-30 07:30:00</td>
+      <td>2022-01-28 18:30:00</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>523204</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>2021-11-29 07:30:00</td>
+      <td>2021-12-29 18:30:00</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>523205</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>2021-10-05 07:30:00</td>
+      <td>2021-10-06 18:30:00</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>523206</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>2021-10-12 07:30:00</td>
+      <td>2021-10-13 18:30:00</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>523207</td>
+      <td>NaT</td>
+      <td>NaT</td>
+      <td>2021-09-28 07:30:00</td>
+      <td>2021-09-29 18:30:00</td>
+    </tr>
+  </tbody>
+</table>
+</div><div class="line-block">
+<div class="line">The xer_df attribute contains a dictionary of all tables in the xer
+file parsed as Pandas DataFrame.</div>
+<div class="line">Since the are pandas data frames they can be save to Excel easily.</div>
+</div>
+<p>To assist a method has been built-in to the P6 object to save all tables
+to a single File where each table in represented in a differt sheet.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">xer</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s1">&#39;xer - tasks.xlsx&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># to see all available columns in the task table lets print them</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">xer</span><span class="o">.</span><span class="n">xer_df</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">task_id</span>
+<span class="n">proj_id</span>
+<span class="n">wbs_id</span>
+<span class="n">clndr_id</span>
+<span class="n">phys_complete_pct</span>
+<span class="n">rev_fdbk_flag</span>
+<span class="n">est_wt</span>
+<span class="n">lock_plan_flag</span>
+<span class="n">auto_compute_act_flag</span>
+<span class="n">complete_pct_type</span>
+<span class="n">task_type</span>
+<span class="n">duration_type</span>
+<span class="n">status_code</span>
+<span class="n">task_code</span>
+<span class="n">task_name</span>
+<span class="n">rsrc_id</span>
+<span class="n">total_float_hr_cnt</span>
+<span class="n">free_float_hr_cnt</span>
+<span class="n">remain_drtn_hr_cnt</span>
+<span class="n">act_work_qty</span>
+<span class="n">remain_work_qty</span>
+<span class="n">target_work_qty</span>
+<span class="n">target_drtn_hr_cnt</span>
+<span class="n">target_equip_qty</span>
+<span class="n">act_equip_qty</span>
+<span class="n">remain_equip_qty</span>
+<span class="n">cstr_date</span>
+<span class="n">act_start_date</span>
+<span class="n">act_end_date</span>
+<span class="n">late_start_date</span>
+<span class="n">late_end_date</span>
+<span class="n">expect_end_date</span>
+<span class="n">early_start_date</span>
+<span class="n">early_end_date</span>
+<span class="n">restart_date</span>
+<span class="n">reend_date</span>
+<span class="n">target_start_date</span>
+<span class="n">target_end_date</span>
+<span class="n">rem_late_start_date</span>
+<span class="n">rem_late_end_date</span>
+<span class="n">cstr_type</span>
+<span class="n">priority_type</span>
+<span class="n">suspend_date</span>
+<span class="n">resume_date</span>
+<span class="n">float_path</span>
+<span class="n">float_path_order</span>
+<span class="n">guid</span>
+<span class="n">tmpl_guid</span>
+<span class="n">cstr_date2</span>
+<span class="n">cstr_type2</span>
+<span class="n">driving_path_flag</span>
+<span class="n">act_this_per_work_qty</span>
+<span class="n">act_this_per_equip_qty</span>
+<span class="n">external_early_start_date</span>
+<span class="n">external_late_end_date</span>
+<span class="n">create_date</span>
+<span class="n">update_date</span>
+<span class="n">create_user</span>
+<span class="n">update_user</span>
+<span class="n">location_id</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plotting-a-p6-style-gantt-chart-using-excel-planning-input">
+<h2>2. Plotting a P6-style gantt chart using Excel planning input<a class="headerlink" href="#plotting-a-p6-style-gantt-chart-using-excel-planning-input" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">import the the <code class="docutils literal notranslate"><span class="pre">gantt</span></code> function.</div>
+<div class="line">Also import <code class="docutils literal notranslate"><span class="pre">pandas</span></code> and <code class="docutils literal notranslate"><span class="pre">numpy</span></code> to load the sample data into a DataFrame
+and get the date extents for plotting</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">boka_tools.planning</span> <span class="kn">import</span> <span class="n">gantt</span>
+</pre></div>
+</div>
+<p>Load the sample data</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;./gantt sample data.xlsx&#39;</span><span class="p">)</span>
+
+<span class="c1"># get min and max dates, and set the actual start and end dates to begining and ends of the respective months</span>
+<span class="n">datemin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Planned_Start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
+<span class="n">datemax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Planned_End&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Check documentation for further guidance on naming convention of the
+columns to plot the tasks correctly, or how to change them</div>
+<div class="line">via the parameters</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print first 5 rows</span>
+<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID</th>
+      <th>Area</th>
+      <th>Panel</th>
+      <th>Task</th>
+      <th>Status</th>
+      <th>Planned_Start</th>
+      <th>Actual_Start</th>
+      <th>Planned_End</th>
+      <th>Actual_End</th>
+      <th>Duration</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>17325</td>
+      <td>G</td>
+      <td>10</td>
+      <td>Sand Capping</td>
+      <td>No Status</td>
+      <td>2020-04-06</td>
+      <td>NaT</td>
+      <td>2021-01-25</td>
+      <td>NaT</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>18695</td>
+      <td>G</td>
+      <td>10</td>
+      <td>Monitoring</td>
+      <td>No Status</td>
+      <td>2020-04-20</td>
+      <td>NaT</td>
+      <td>2020-04-27</td>
+      <td>NaT</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>18010</td>
+      <td>G</td>
+      <td>10</td>
+      <td>PRE-SIW-SI</td>
+      <td>No Status</td>
+      <td>2021-01-22</td>
+      <td>NaT</td>
+      <td>2021-01-29</td>
+      <td>NaT</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>5032</td>
+      <td>G</td>
+      <td>10</td>
+      <td>PVD Shop Drawings</td>
+      <td>Approved</td>
+      <td>2021-01-18</td>
+      <td>NaT</td>
+      <td>2021-01-25</td>
+      <td>NaT</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5033</td>
+      <td>G</td>
+      <td>10</td>
+      <td>PVD Trials</td>
+      <td>Not Started</td>
+      <td>2021-01-26</td>
+      <td>NaT</td>
+      <td>2021-02-02</td>
+      <td>NaT</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div><p>Specify which columns to show in the table of the gantt chart</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cols_table</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Panel&#39;</span><span class="p">,</span> <span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="s1">&#39;Planned_Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Planned_End&#39;</span><span class="p">,</span> <span class="s1">&#39;Actual_Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Actual_End&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">plot the gantt chart.</div>
+<div class="line">A warning is given because the DataFrame had more than 80 lines.</div>
+</div>
+<p>The planning can also be saved as pdf. Check documentation on how to do
+this.</p>
+<p>How to split DataFrame and loop over 80-line section to compile into a
+multipage planning will be shown in future releases.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gantt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">datemin</span><span class="p">,</span> <span class="n">datemax</span><span class="p">,</span> <span class="n">cols_table</span><span class="o">=</span><span class="n">cols_table</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/output_10_0.png" src="_images/output_10_0.png" />
+</div>
+<div class="section" id="plotting-cpt-data">
+<h2>3. Plotting CPT data<a class="headerlink" href="#plotting-cpt-data" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">import the <code class="docutils literal notranslate"><span class="pre">ParseGEF</span></code> module (external package from <code class="docutils literal notranslate"><span class="pre">pygef</span></code>, made by
+Ritchie Vink)</div>
+<div class="line">and the <code class="docutils literal notranslate"><span class="pre">`plot_si_result</span></code> function</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">boka_tools.soil_investigation</span> <span class="kn">import</span> <span class="n">ParseGEF</span><span class="p">,</span> <span class="n">plot_si_results</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+<p>load a gef file</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># load file</span>
+<span class="n">gef</span> <span class="o">=</span> <span class="n">ParseGEF</span><span class="p">(</span><span class="s1">&#39;./gef/CPT-I-50.GEF&#39;</span><span class="p">)</span>
+
+<span class="c1"># extract df for easy reference</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">gef</span><span class="o">.</span><span class="n">df</span>
+
+<span class="c1"># print to 5 rows</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>penetration_length</th>
+      <th>qc</th>
+      <th>fs</th>
+      <th>u2</th>
+      <th>inclination_NS</th>
+      <th>inclination_EW</th>
+      <th>column_code=7</th>
+      <th>time</th>
+      <th>depth</th>
+      <th>elevation_with_respect_to_NAP</th>
+      <th>friction_number</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00</td>
+      <td>0.001558</td>
+      <td>0.0</td>
+      <td>0.000201</td>
+      <td>0.341880</td>
+      <td>1.222222</td>
+      <td>1.330128</td>
+      <td>10.00</td>
+      <td>0.00</td>
+      <td>6.83</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.01</td>
+      <td>0.014019</td>
+      <td>0.0</td>
+      <td>0.000201</td>
+      <td>0.064103</td>
+      <td>1.266667</td>
+      <td>18.974360</td>
+      <td>11.00</td>
+      <td>0.01</td>
+      <td>6.82</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.02</td>
+      <td>0.021807</td>
+      <td>0.0</td>
+      <td>0.000201</td>
+      <td>-0.021930</td>
+      <td>1.333333</td>
+      <td>31.426280</td>
+      <td>11.59</td>
+      <td>0.02</td>
+      <td>6.81</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.03</td>
+      <td>0.052959</td>
+      <td>0.0</td>
+      <td>0.000201</td>
+      <td>0.128205</td>
+      <td>1.333333</td>
+      <td>30.785260</td>
+      <td>12.09</td>
+      <td>0.03</td>
+      <td>6.80</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.04</td>
+      <td>0.068536</td>
+      <td>0.0</td>
+      <td>0.000201</td>
+      <td>-0.175439</td>
+      <td>1.377778</td>
+      <td>31.682690</td>
+      <td>12.56</td>
+      <td>0.04</td>
+      <td>6.79</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div><div class="line-block">
+<div class="line">Create a JSON object containing all the plot properties.</div>
+<div class="line">For the JSON schema, please check the documentation</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get max and min depths and round up/down respectively</span>
+<span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">elevation_with_respect_to_NAP</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">elevation_with_respect_to_NAP</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+
+<span class="c1"># set the meter tick interval</span>
+<span class="n">y_int</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># make the json object</span>
+<span class="n">plot_props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">plots</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">y_data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">elevation_with_respect_to_NAP</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">plot_1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="s1">&#39;ax1&#39;</span><span class="p">,</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;qc&#39;</span><span class="p">,</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;plot&#39;</span><span class="p">,</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">qc</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span> <span class="s1">&#39;qc&#39;</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">plot_2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="s1">&#39;ax1_2&#39;</span><span class="p">,</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Rf&#39;</span><span class="p">,</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;plot&#39;</span><span class="p">,</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">friction_number</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Rf&#39;</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">plot_3</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="s1">&#39;ax2&#39;</span><span class="p">,</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;plot&#39;</span><span class="p">,</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fs</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span><span class="n">ls</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;fs&#39;</span><span class="p">),</span>
+        <span class="p">),</span>
+        <span class="n">plot_4</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="s1">&#39;ax3&#39;</span><span class="p">,</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;u2&#39;</span><span class="p">,</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;plot&#39;</span><span class="p">,</span>
+            <span class="n">x_data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">u2</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span> <span class="s1">&#39;u2&#39;</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">widths</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">],</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">ax1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;qt [MPa]&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Elevation [m+CD]&#39;</span><span class="p">),</span>
+            <span class="n">ax2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.50</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;fs [MPa]&#39;</span><span class="p">),</span>
+            <span class="n">ax3</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;u2 [MPa]&#39;</span><span class="p">),</span>
+            <span class="nb">all</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="o">+</span><span class="n">y_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">)])</span>
+        <span class="p">),</span>
+        <span class="n">twiny</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">ax1_2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">twin</span><span class="o">=</span><span class="s1">&#39;ax1&#39;</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">xticks</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                    <span class="n">xticklabels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">x</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+                    <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">25</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Rf [%]&#39;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">papersize</span><span class="o">=</span><span class="s1">&#39;A4&#39;</span><span class="p">,</span>
+        <span class="n">margins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">logo</span> <span class="o">=</span> <span class="s1">&#39;./hydronamic.tif&#39;</span>
+    <span class="p">),</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">pointid</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CPT-TEST-01&#39;</span><span class="p">],</span>
+        <span class="n">row_spacing</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="n">general_titles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CLIENT&#39;</span><span class="p">,</span> <span class="s1">&#39;ENGINEER&#39;</span><span class="p">,</span> <span class="s1">&#39;AC&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTRACTOR&#39;</span><span class="p">,</span> <span class="s1">&#39;PROJECT&#39;</span><span class="p">],</span>
+        <span class="n">general_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Client A&#39;</span><span class="p">,</span> <span class="s1">&#39;Consultant A&#39;</span><span class="p">,</span> <span class="s1">&#39;Consultant B&#39;</span><span class="p">,</span> <span class="s1">&#39;Boskalis&#39;</span><span class="p">,</span> <span class="s1">&#39;A Nice Reclamation Project&#39;</span><span class="p">],</span>
+        <span class="n">location_titles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AREA&#39;</span><span class="p">,</span> <span class="s1">&#39;PANEL&#39;</span><span class="p">,</span> <span class="s1">&#39;EASTING&#39;</span><span class="p">,</span> <span class="s1">&#39;NORTHING&#39;</span><span class="p">,</span> <span class="s1">&#39;ELEVATION&#39;</span><span class="p">],</span>
+        <span class="n">location_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span> <span class="s1">&#39;24564&#39;</span><span class="p">,</span> <span class="s1">&#39;4436l&#39;</span><span class="p">,</span> <span class="s1">&#39;3.46&#39;</span><span class="p">],</span>
+        <span class="n">location_units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39; m+CD&#39;</span><span class="p">],</span>
+        <span class="n">version_titles</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CPT DATE&#39;</span><span class="p">,</span> <span class="s1">&#39;PRINT DATE&#39;</span><span class="p">,</span> <span class="s1">&#39;PREPARED BY&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECKED BY&#39;</span><span class="p">,</span> <span class="s1">&#39;APPROVED BY&#39;</span><span class="p">],</span>
+        <span class="n">version_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;01-Jan-2020&#39;</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">-%b-%Y&#39;</span><span class="p">),</span> <span class="s1">&#39;MBET&#39;</span><span class="p">,</span> <span class="s1">&#39;MBET&#39;</span><span class="p">,</span> <span class="s1">&#39;MBET&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Pass the plot_props json object to the plot_si_results function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_si_results</span><span class="p">(</span><span class="n">plot_props</span><span class="p">)</span>
+
+<span class="c1"># show figure</span>
+<span class="n">fig</span>
+</pre></div>
+</div>
+<img alt="_images/output_8_0.png" src="_images/output_8_0.png" />
+<div class="line-block">
+<div class="line">The figure can be saved as pdf by calling the matplotlib savefig
+method.</div>
+<div class="line">For other output formats, see the matplotlib documentation.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;cpt-test-01.pdf&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="loading-and-parsing-ags-files">
+<h2>4. Loading and Parsing AGS files<a class="headerlink" href="#loading-and-parsing-ags-files" title="Permalink to this headline">¶</a></h2>
+<p>Import the <code class="docutils literal notranslate"><span class="pre">AGS</span></code> module</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">boka_tools.soil_investigation</span> <span class="kn">import</span> <span class="n">AGS</span>
+</pre></div>
+</div>
+<p>Load AGS file from specified path</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">path_to_file</span> <span class="o">=</span> <span class="s1">&#39;./ags/test_ags.ags&#39;</span>
+<span class="n">ags</span> <span class="o">=</span> <span class="n">AGS</span><span class="p">(</span><span class="n">path_to_file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>print all keys to check what tables are available</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ags</span><span class="o">.</span><span class="n">df</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PROJ</span>
+<span class="n">ABBR</span>
+<span class="n">HOLE</span>
+<span class="n">DICT</span>
+<span class="n">UNIT</span>
+<span class="n">GEOL</span>
+<span class="n">ISPT</span>
+<span class="n">SAMP</span>
+<span class="n">WETH</span>
+<span class="n">TRIG</span>
+<span class="n">GRAD</span>
+<span class="n">PTST</span>
+<span class="n">CLSS</span>
+<span class="n">HDPH</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Call the HOLE table showing the HOLE info from the AGS file.</div>
+<div class="line">Transpose and dropna functions are called to increase readability and
+hide nan values.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ags</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">HOLE</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>HOLE_ID</th>
+      <td>BH-CBW-40</td>
+    </tr>
+    <tr>
+      <th>HOLE_TYPE</th>
+      <td>RO</td>
+    </tr>
+    <tr>
+      <th>HOLE_NATE</th>
+      <td>48678.9</td>
+    </tr>
+    <tr>
+      <th>HOLE_NATN</th>
+      <td>43408.6</td>
+    </tr>
+    <tr>
+      <th>HOLE_GL</th>
+      <td>4.846</td>
+    </tr>
+    <tr>
+      <th>HOLE_FDEP</th>
+      <td>38.16</td>
+    </tr>
+    <tr>
+      <th>HOLE_STAR</th>
+      <td>28/01/2019</td>
+    </tr>
+    <tr>
+      <th>HOLE_ENDD</th>
+      <td>01/02/2019</td>
+    </tr>
+    <tr>
+      <th>HOLE_GWL</th>
+      <td>3.38</td>
+    </tr>
+    <tr>
+      <th>HOLE_CHK</th>
+      <td>Khine</td>
+    </tr>
+    <tr>
+      <th>HOLE_APP</th>
+      <td>Tada</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+<div class="section" id="creating-a-sql-engine-to-query-data-from-microsoft-sql-server">
+<h2>5. Creating a SQL engine to query data from Microsoft SQL Server<a class="headerlink" href="#creating-a-sql-engine-to-query-data-from-microsoft-sql-server" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">SQL engines are often used to collect and store data.</div>
+<div class="line">the <code class="docutils literal notranslate"><span class="pre">server_connect</span></code> function creates an easy manner to connect to a
+MSSQL server to retrieve and store data</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">boka_tools</span> <span class="kn">import</span> <span class="n">server_connect</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set server address and database name for connection</span>
+<span class="n">SERVER</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span>
+<span class="n">DATABASE</span> <span class="o">=</span> <span class="s1">&#39;EngDepPT&#39;</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">server_connect</span><span class="p">(</span><span class="n">SERVER</span><span class="p">,</span> <span class="n">DATABASE</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Check the engine string out</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">engine</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Engine(mssql+pyodbc:///?odbc_connect=Driver={SQL Server};Server=localhost;Database=EngDepPT;UID=api;PWD=api)
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="todo.html" class="btn btn-neutral float-right" title="To Do" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Maarten Betman
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

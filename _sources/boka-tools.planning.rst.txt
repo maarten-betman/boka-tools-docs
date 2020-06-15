@@ -1,0 +1,30 @@
+boka\-tools.planning package
+============================
+
+Submodules
+----------
+
+boka\-tools.planning.gantt module
+---------------------------------
+
+.. automodule:: boka-tools.planning.gantt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+boka\-tools.planning.primavera module
+-------------------------------------
+
+.. automodule:: boka-tools.planning.primavera
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: boka-tools.planning
+   :members:
+   :undoc-members:
+   :show-inheritance:

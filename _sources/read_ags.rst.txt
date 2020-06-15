@@ -1,0 +1,608 @@
+Example
+========
+
+.. code:: ipython3
+
+    from munch import Munch
+    import re
+    import pprint
+    import pandas as pd
+    import numpy as np
+    from hedset.utils.sql import server_connect
+    import datetime
+    import os
+    import pickle
+    from sqlalchemy import NVARCHAR, VARCHAR, FLOAT, INTEGER
+
+.. code:: ipython3
+
+    path = r'D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder'
+    
+    files = []
+    
+    for file in os.listdir(path):
+        if file.endswith(".ags"):
+            files.append(path+'\\'+file)
+
+.. code:: ipython3
+
+    class AGS:
+        
+        def __init__(self, path, ags_version=3.1):
+            
+            self.ags_version = ags_version
+            
+            with open(path, 'r') as f:
+                self.ags_raw = f.readlines()
+                
+            self.ags = dict()
+            self.df = Munch()
+            
+            if self.ags_version == 3.1:
+                self._parse_ags_3()
+                self._make_df()
+            elif self.ags_version == 4:
+                self._parse_ags_4()
+                self._make_df()
+            else:
+                raise AttributeError('This AGS version is not supported')
+            
+        def _parse_ags_3(self):
+            
+            for i, line in enumerate(self.ags_raw):
+                if '**' in line:
+                    group = re.search(r'[A-Z]{4}',line).group(0)
+                    group_line = i
+                    if '?' in line:
+                        user_def = True
+                    else:
+                        user_def = False
+    
+                    self.ags[group] = dict()
+    
+                elif '*' in line:
+                    headers = re.findall(r'[A-Z]{4}_[A-Z,0-9]{2,4}\d?',line)
+                    for header in headers:
+                        self.ags[group][header] = []
+    
+                    start_block = i+1
+    
+                elif '<UNITS>' in line:
+                    pass
+    
+                else:
+                    split_line = line.split('","')
+                    len_block = len(split_line)
+                    len_header = len(self.ags[group].keys())
+                    headers = list(self.ags[group].keys())
+    
+                    if len_block==len_header:
+                        if '"<CONT>' == split_line[0]:
+                            for header, col in zip(headers[1:], split_line[1:]):
+                                self.ags[group][header][-1] = self.ags[group][header][-1] + (col.replace('\n', '').replace('"', ''))          
+                        else:
+                            for header, col in zip(headers, split_line):
+                                self.ags[group][header].append(col.replace('\n', '').replace('"', ''))
+        
+        def _parse_ags_4(self):
+            pass
+                                
+        def _make_df(self, to_numeric=True):
+            for key in self.ags.keys():
+                self.df[key] = pd.DataFrame(self.ags[key])
+            
+                if to_numeric:
+                    self.df[key] = self.df[key].apply(pd.to_numeric, errors='ignore')
+        
+        def gint_mapper(self, mapper):
+            
+            renamed_df = Munch()
+    
+            for group in mapper.group.unique():
+                try:
+                    temp = mapper[mapper.group==group][['ags_name','gint_name']]
+                    headers = temp.ags_name.to_list()
+                    d = {x[0]:x[1] for x in temp.values}
+    
+                    temp_df = self.df[group][headers].rename(columns=d)
+    
+                    for col in temp_df.columns:
+                        if 'date' in col.lower():
+                            temp_df[col] = pd.to_datetime(temp_df[col], format=r'%d/%m/%Y', errors='coerce')
+    
+                    renamed_df[group] = temp_df  
+                except KeyError:
+                    renamed_df[group] = pd.DataFrame() 
+                
+            return renamed_df
+        
+        @staticmethod
+        def upload_to_gint(engine, df_dict, sequence, gint_proj_id=3):
+            order = ['POINT', 'SAMPLE', 'SPECIMEN', 'STRATA_MAIN', 'IN_SITU_SPT', 'WEATHERING', 'LAB_SOIL_TRIAXIAL_EFFECTIVE', 'LAB_SOIL_SIEVE', 'HOLE_INFO_DEPTH']
+            
+            for gint_table in order:
+                if sequence[gint_table] in df_dict.keys():
+                    print('Uploading', gint_table)
+                    df_upload = df_dict[sequence[gint_table]]
+                    df_upload['gINTProjectID'] = 3
+    
+                    if gint_table == 'POINT':
+                        df_upload['Processed_by'] = os.getlogin()
+                        df_upload['Processed_Date'] = datetime.datetime.now()
+                        
+                        df_point_ids_in_gint = pd.read_sql_query(f'SELECT PointID FROM POINT WHERE gINTProjectID = {gint_proj_id}', engine).PointID.to_list()
+                        
+                        df_upload = df_upload[~df_upload.PointID.isin(df_point_ids_in_gint)]
+                    
+                    if len(df_upload) > 0:  
+                        if 'Depth' in list(df_upload.columns): #Depth cannot be nan
+                            df_upload = df_upload.dropna(subset=['Depth'])
+                            
+                        df_upload.to_sql(gint_table, engine, if_exists='append', index=False)        
+
+.. code:: ipython3
+
+    # ags = AGS(path)
+    rename = pd.read_excel('rename_mapper.xlsx', header=None, usecols='A:C', names=["group",'ags_name','gint_name']).dropna()
+    # renamed_df = ags.gint_mapper(rename)
+
+.. code:: ipython3
+
+    del all_df
+
+.. code:: ipython3
+
+    for file in files:
+    #     print(file)
+        ags = AGS(file)
+        if 'all_df' in locals():
+            all_df_temp = ags.df
+            
+            for key in all_df_temp.keys():
+                try:
+                    all_df[key] = pd.concat([all_df[key], all_df_temp[key]], sort=False)
+                except KeyError:
+                    all_df[key] = all_df_temp[key]
+        else:
+            all_df = ags.df
+
+.. code:: ipython3
+
+    for file in files:
+    #     print(file)
+        ags = AGS(file)
+        if 'renamed_df' in locals():
+            renamed_df_temp = ags.gint_mapper(rename)
+            
+            for key in renamed_df_temp.keys():
+                try:
+                    renamed_df[key] = pd.concat([renamed_df[key], renamed_df_temp[key]])
+                except KeyError:
+                    renamed_df[key] = renamed_df_temp[key]
+        else:
+            renamed_df = ags.gint_mapper(rename)
+
+
+.. parsed-literal::
+
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-0-34(Preliminary) (2).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-0-34(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-0-35(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-0-36(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-0-37(Preliminary)_rev01.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-0-38(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-0-42(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-0-43(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-17(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-19(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-21(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-16(Preliminary)20191113.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-21(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-22(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-23(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-27(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-28(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-29(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-30(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-31(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-32(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-BC-33(Preliminary)20191108.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CBW-27A(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CBW-29A(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CBW-92(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CBW-COR-25(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-02(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-03(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-04(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-05(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-06(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-07(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-08(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-09(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-10(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-11(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-12(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-13(Preliminary)20191108.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-14(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-15(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-16(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CD-17(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CPS-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CS-02(Preliminary)20191113.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CS-03(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CS-15(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CS-16(Preliminary)20191107.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CS-17(Preliminary)20191107.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-CS-18(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-D-20(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-D-21(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-D-22(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-D-23(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-D-24(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-D-47(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-D-49(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-DA-22(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-DC6-02(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-DPS-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-DPS-02(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-ESS-03(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-IS-04(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-OS-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PC-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-POST-DA-16(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C3A-03(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C3C-02(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C3C-05(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C3C-07(Preliminary)20191107.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C4B-07(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C4B-08(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C6A-04(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C7A-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C8C-02(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C8C-02(Preliminary)_Rev01.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-PRE-C8C-04(Preliminary)20191108.ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-SUM-05(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-SUM-07(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-SUM-08(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-SW-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-SW-02(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-B17(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-C355(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-C4A-ZE25-PT1-03 (Internal)(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-C4A-ZE25-PT1-03(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-C4A-ZE25-PT1-04(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-C4A-ZE25-PT2-05(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-C4A-ZE25-PT2-06(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-C4B-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-C7A-02(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-05(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-06(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-07(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-14(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-15(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-17(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-18(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-19(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-20(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-21(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-22(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-23(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-24(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-25(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-26(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-27(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-28(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-29(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-37(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-38(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DA-39(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-01(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-02(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-03(2ND TIME)(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-03(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-04(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-05(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-06(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-07(Preliminary).ags
+    D:\Users\mbet\OneDrive - boskalis.com\9. PEng\a. Pulau Tekong\12. T-Drive\07. SI\si_folder\BH-VST-DC-08(Preliminary).ags
+    
+
+.. code:: ipython3
+
+    depth = np.linspace(0,30, 101)
+    su = depth * 6.5 * 0.22
+    su_s28 = depth * 6.5 * 0.28
+
+.. code:: ipython3
+
+    ax = all_df.TRIG.plot.scatter('TRIG_CU','SPEC_DPTH', ylim=[30,0], xlim=[0,200])
+    ax.plot(su, depth, color='red')
+    ax.plot(su_s28, depth, color='red', linestyle='--')
+    ax.axvline([23], color='green')
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.lines.Line2D at 0x126b0cc0>
+
+
+
+
+.. image:: output_8_1.png
+
+
+.. code:: ipython3
+
+    all_df.TRIG.groupby('TRIG_TYPE').count()#[all_df.TRIG.HOLE_ID=='BH-12'].sort_values('SPEC_DPTH')
+
+
+
+
+.. raw:: html
+
+    <div>
+    <style scoped>
+        .dataframe tbody tr th:only-of-type {
+            vertical-align: middle;
+        }
+    
+        .dataframe tbody tr th {
+            vertical-align: top;
+        }
+    
+        .dataframe thead th {
+            text-align: right;
+        }
+    </style>
+    <table border="1" class="dataframe">
+      <thead>
+        <tr style="text-align: right;">
+          <th></th>
+          <th>HOLE_ID</th>
+          <th>SAMP_TOP</th>
+          <th>SAMP_REF</th>
+          <th>SAMP_TYPE</th>
+          <th>SPEC_REF</th>
+          <th>SPEC_DPTH</th>
+          <th>TRIG_COND</th>
+          <th>TRIG_REM</th>
+          <th>TRIG_CU</th>
+          <th>TRIG_COH</th>
+          <th>TRIG_PHI</th>
+          <th>FILE_FSET</th>
+          <th>SAMP_ID</th>
+        </tr>
+        <tr>
+          <th>TRIG_TYPE</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>CU</th>
+          <td>64</td>
+          <td>64</td>
+          <td>64</td>
+          <td>64</td>
+          <td>64</td>
+          <td>64</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>64</td>
+          <td>64</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <th>UNC</th>
+          <td>6</td>
+          <td>6</td>
+          <td>6</td>
+          <td>6</td>
+          <td>6</td>
+          <td>6</td>
+          <td>0</td>
+          <td>0</td>
+          <td>6</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <th>UU</th>
+          <td>229</td>
+          <td>229</td>
+          <td>229</td>
+          <td>229</td>
+          <td>229</td>
+          <td>229</td>
+          <td>0</td>
+          <td>0</td>
+          <td>229</td>
+          <td>188</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+
+.. code:: ipython3
+
+    ags_tables = list(renamed_df.keys())
+    gint_tables = ['POINT', 'STRATA_MAIN', 'IN_SITU_SPT', 'SAMPLE', 'WEATHERING', 'LAB_SOIL_TRIAXIAL_EFFECTIVE', 'LAB_SOIL_SIEVE', 'SPECIMEN', 'HOLE_INFO_DEPTH']
+    
+    sequence_mapper = {x:y for y, x in zip(ags_tables, gint_tables)}
+    
+    AGS.upload_to_gint(engine, renamed_df, sequence_mapper)
+
+.. code:: ipython3
+
+    renamed_df.HOLE['gINTProjectID'] = 3
+    renamed_df.HOLE.to_sql('##POINT', engine, index=False)
+
+.. code:: ipython3
+
+    target_db = 'PulauTekongGintDatgel'
+    server = '10.64.32.62'
+    engine = server_connect(server, target_db)
+
+.. code:: ipython3
+
+    with open('gint.p', 'rb') as f:
+        gint = pickle.load(f)
+        
+    all_gint_tables = [table for table in gint.tables]
+
+.. code:: ipython3
+
+    with open('merge.sql') as f:
+        sql = f.read()
+    
+    df = renamed_df[ags_table].dropna(how='all', axis=1)
+    
+    gint_table = 'SAMPLE'
+    ags_table = 'SAMP'
+    df['gINTProjectID'] = 3
+    
+    index = [x for x in gint.tables[gint_table].indexes][0]
+    gint_column_names = [x.name for x in gint.tables[gint_table].columns]
+    gint_column_types = [x.type for x in gint.tables[gint_table].columns]
+    index_columns = [x.name for x in index.columns]
+    
+    
+    df_columns = df.columns
+    df_column_type = df.dtypes
+    
+    for c in [c for c in index_columns if c not in df_columns]:
+        print(c)
+        gint_type = gint_column_types[gint_column_names.index(c)]
+        renamed_df[ags_table][c] = ''
+    
+    # Change column data type
+    dtype_dict = {}
+    for i, col in enumerate(df_column_type.index.to_list()):
+        gint_type = gint_column_types[gint_column_names.index(col)]
+        dtype_dict[col] = gint_type.python_type
+    
+    df = df.astype(dtype_dict)
+    
+    
+    if all([c in df_columns for c in index_columns]):
+        match_statement_list = []
+        update_list = []
+        insert_cols_list = []
+        insert_values_list = []
+        
+        for col in index_columns:
+            gint_column_names_idx = gint_column_names.index(col)
+            if isinstance(gint_column_types[gint_column_names_idx], NVARCHAR) or isinstance(gint_column_types[gint_column_names_idx], VARCHAR): 
+                match_statement_list.append(f'SOURCE.{col} COLLATE Latin1_General_CI_AS = TARGET.{col} COLLATE Latin1_General_CI_AS')
+            else:
+                match_statement_list.append(f'SOURCE.{col} = TARGET.{col}')
+                
+        match_statement = ' AND \n\t'.join(match_statement_list)
+    
+        for col in df_columns:
+            update_list.append(f'TARGET.{col} = SOURCE.{col}')
+            insert_cols_list.append(f'[{col}]')
+            insert_values_list.append(f'SOURCE.[{col}]')
+        
+        update = ', \n\t'.join(update_list)
+        insert_cols = ', \n\t'.join(insert_cols_list)
+        insert_values = ', \n\t'.join(insert_values_list)
+    else:
+        raise ValueError('DataFrame in missing {} index column(s)'.format([c for c in index_columns if c not in df_columns]))
+        
+        
+    variables = dict(
+        target_db = target_db,
+        target = f'{target_db}.dbo.{gint_table}',
+        source = '##'+gint_table,
+        match_statement = match_statement,
+        update = update,
+        insert_cols = insert_cols,
+        insert_values = insert_values
+    )
+    
+    # renamed_df[ags_table].to_sql(f'##{gint_table}', engine, index=False)
+    
+    print(sql.format(**variables))
+
+
+.. parsed-literal::
+
+    USE [PulauTekongGintDatgel]
+    GO
+    SET ANSI_NULLS ON
+    GO
+    SET QUOTED_IDENTIFIER ON
+    GO
+    
+    BEGIN
+    	-- SET NOCOUNT ON added to prevent extra result sets from
+    	-- interfering with SELECT statements.
+    	SET NOCOUNT ON;
+    
+    SET IDENTITY_INSERT PulauTekongGintDatgel.dbo.SAMPLE OFF
+    MERGE PulauTekongGintDatgel.dbo.SAMPLE AS TARGET
+        USING ##SAMPLE AS SOURCE
+        ON ( SOURCE.gINTProjectID = TARGET.gINTProjectID AND 
+    	SOURCE.PointID COLLATE Latin1_General_CI_AS = TARGET.PointID COLLATE Latin1_General_CI_AS AND 
+    	SOURCE.Depth = TARGET.Depth AND 
+    	SOURCE.Sample_Number COLLATE Latin1_General_CI_AS = TARGET.Sample_Number COLLATE Latin1_General_CI_AS AND 
+    	SOURCE.Sample_Type COLLATE Latin1_General_CI_AS = TARGET.Sample_Type COLLATE Latin1_General_CI_AS AND 
+    	SOURCE.Sample_ID COLLATE Latin1_General_CI_AS = TARGET.Sample_ID COLLATE Latin1_General_CI_AS )
+        WHEN MATCHED THEN
+        UPDATE SET TARGET.PointID = SOURCE.PointID, 
+    	TARGET.Depth = SOURCE.Depth, 
+    	TARGET.Sample_Number = SOURCE.Sample_Number, 
+    	TARGET.Sample_Type = SOURCE.Sample_Type, 
+    	TARGET.Bottom = SOURCE.Bottom, 
+    	TARGET.Remark = SOURCE.Remark, 
+    	TARGET.Sample_ID = SOURCE.Sample_ID, 
+    	TARGET.gINTProjectID = SOURCE.gINTProjectID
+    
+        WHEN NOT MATCHED THEN
+        INSERT ( [PointID], 
+    	[Depth], 
+    	[Sample_Number], 
+    	[Sample_Type], 
+    	[Bottom], 
+    	[Remark], 
+    	[Sample_ID], 
+    	[gINTProjectID] )
+        VALUES ( SOURCE.[PointID], 
+    	SOURCE.[Depth], 
+    	SOURCE.[Sample_Number], 
+    	SOURCE.[Sample_Type], 
+    	SOURCE.[Bottom], 
+    	SOURCE.[Remark], 
+    	SOURCE.[Sample_ID], 
+    	SOURCE.[gINTProjectID] )
+    ;
+    SET ANSI_WARNINGS ON
+    
+    END
+    
+
